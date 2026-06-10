@@ -45,6 +45,9 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
 endfunction()
 
+# Suppress deprecated experimental coroutine header errors globally for all targets (including plugins).
+add_compile_definitions("_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS=1")
+
 # Flutter library and tool build rules.
 set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
 add_subdirectory(${FLUTTER_MANAGED_DIR})
