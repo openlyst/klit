@@ -13,9 +13,6 @@ class PopularDateInlineBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final subtle = TextStyle(color: dimTextColor(context));
-    final bg = theme.brightness == Brightness.dark
-        ? theme.cardColor.withValues(alpha: 0.55)
-        : theme.colorScheme.surfaceContainerHigh;
 
     return AnimatedBuilder(
       animation: controller,
@@ -25,7 +22,7 @@ class PopularDateInlineBar extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: bg,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
                 color: theme.dividerColor.withValues(alpha: 0.35),
