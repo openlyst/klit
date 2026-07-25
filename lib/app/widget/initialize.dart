@@ -36,7 +36,7 @@ class AppInitState extends State<AppInit> {
   @override
   void reassemble() {
     super.reassemble();
-    VideoService.disposeAll();
+    VideoService.disposeAllSync();
   }
 
   Future<_AppInitData> _init() async {

@@ -95,6 +95,24 @@ class VideoService extends ChangeNotifier {
       await player.dispose();
     }
   }
+
+  /// Synchronously triggers disposal of all cached players without awaiting.
+  /// The native mpv_terminate_destroy call is synchronous, so calling
+  /// dispose() without await still stops the mpv core threads before
+  /// the Dart isolate is destroyed during hot restart.
+  static void disposeAllSync() {
+    final videos = Map.of(_videos);
+    _videos.clear();
+    for (final player in videos.values) {
+      player.dispose();
+    }
+  }
+
+  @override
+  void dispose() {
+    disposeAllSync();
+    super.dispose();
+  }
 }
 
 class VideoServiceProvider
