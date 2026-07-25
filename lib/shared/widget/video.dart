@@ -86,6 +86,15 @@ class VideoService extends ChangeNotifier {
       _logger.fine('Unloaded $key');
     }
   }
+
+  static Future<void> disposeAll() async {
+    final videos = Map.of(_videos);
+    _videos.clear();
+    for (final player in videos.values) {
+      await player.pause();
+      await player.dispose();
+    }
+  }
 }
 
 class VideoServiceProvider

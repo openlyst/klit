@@ -33,6 +33,12 @@ class AppInitState extends State<AppInit> {
 
   void reinitialize() => setState(() => _key = UniqueKey());
 
+  @override
+  void reassemble() {
+    super.reassemble();
+    VideoService.disposeAll();
+  }
+
   Future<_AppInitData> _init() async {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     await DateFormatting.ensureInitialized();
