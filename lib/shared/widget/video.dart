@@ -23,6 +23,15 @@ class VideoPlayer extends Player {
   VideoPlayer() {
     controller.waitUntilFirstFrameRendered.then((_) => _initialized.add(true));
     stream.error.first.then((_) => _initialized.add(true));
+    // Loop manually instead of using PlaylistMode.single. mpv's loop-file
+    // can freeze the video frame on loop while audio keeps playing, and
+    // the position stream sometimes stalls at 0:00 after a loop boundary.
+    _completedSubscription = stream.completed.listen((completed) {
+      if (completed && looping && !_disposed) {
+        seek(Duration.zero);
+        play();
+      }
+    });
   }
 
   late final VideoController _controller =
@@ -33,6 +42,18 @@ class VideoPlayer extends Player {
   Stream<bool> get initialized => _initialized.stream;
 
   bool get isInitialized => _initialized.value;
+
+  bool looping = true;
+
+  bool _disposed = false;
+  StreamSubscription<bool>? _completedSubscription;
+
+  @override
+  Future<void> dispose() {
+    _disposed = true;
+    _completedSubscription?.cancel();
+    return super.dispose();
+  }
 }
 
 class VideoService extends ChangeNotifier {
@@ -70,7 +91,6 @@ class VideoService extends ChangeNotifier {
     return _videos.putIfAbsent(key, () {
       VideoPlayer player = VideoPlayer();
       player.open(Media(key), play: false);
-      player.setPlaylistMode(PlaylistMode.single);
       player.setVolume(_muteVideos ? 0 : 100);
       return player;
     });
